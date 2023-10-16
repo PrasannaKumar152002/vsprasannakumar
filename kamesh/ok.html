@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<!-- <%@page import="java.time.LocalDateTime" %> -->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Invoice</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="jquery-1.10.2.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+        integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+</head>
+
+<body>
+    <style>
+        *,
+        *::after,
+        *::before {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --blue-color: #0c2f54;
+            --dark-color: #535b61;
+            --white-color: #fff;
+        }
+
+        ul {
+            list-style-type: none;
+        }
+
+        ul li {
+            margin: 2px 0;
+        }
+
+        /* text colors */
+        .text-dark {
+            color: var(- -dark-color);
+        }
+
+        .text-blue {
+            color: var(- -blue-color);
+        }
+
+        .text-end {
+            text-align: right;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-start {
+            text-align: left;
+        }
+
+        .text-bold {
+            font-weight: 700;
+        }
+
+        /* hr line */
+        .hr {
+            height: 1px;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        /* border-bottom */
+        .border-bottom {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(- -dark-color);
+            font-size: 14px;
+        }
+
+        .invoice-wrapper {
+            min-height: 100vh;
+            background-color: rgba(0, 0, 0, 0.1);
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .invoice {
+            max-width: 850px;
+            margin-right: auto;
+            margin-left: auto;
+            background-color: var(- -white-color);
+            padding: 70px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            min-height: 920px;
+        }
+
+        .invoice-head-top-left img {
+            width: 130px;
+        }
+
+        .invoice-head-top-right h3 {
+            font-weight: 500;
+            font-size: 27px;
+            color: var(- -blue-color);
+        }
+
+        .invoice-head-middle,
+        .invoice-head-bottom {
+            padding: 16px 0;
+        }
+
+        .invoice-body {
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .invoice-body table {
+            border-collapse: collapse;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        .invoice-body table td,
+        .invoice-body table th {
+            padding: 12px;
+        }
+
+        .invoice-body table tr {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .invoice-body table thead {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .invoice-body-info-item {
+            display: grid;
+            grid-template-columns: 80% 20%;
+        }
+
+        .invoice-body-info-item .info-item-td {
+            padding: 12px;
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .invoice-foot {
+            padding: 30px 0;
+        }
+
+        .invoice-foot p {
+            font-size: 12px;
+        }
+
+        .invoice-btns {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .invoice-btn {
+            padding: 3px 9px;
+            color: var(- -dark-color);
+            font-family: inherit;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .invoice-head-top,
+        .invoice-head-middle,
+        .invoice-head-bottom {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            padding-bottom: 10px;
+        }
+
+        .cusname {
+            width: 280px;
+            margin-left: 250px;
+        }
+
+        .invoice-head-middle-right {
+            margin-left: 90px;
+            width: 150px;
+        }
+
+        .invoice-head-middle-left {
+            width: 150px;
+        }
+
+        @media screen and (max-width: 992px) {
+            .invoice {
+                padding: 40px;
+            }
+        }
+
+        @media screen and (max-width: 576px) {
+
+            .invoice-head-top,
+            .invoice-head-middle,
+            .invoice-head-bottom {
+                grid-template-columns: repeat(1, 1fr);
+            }
+
+            .invoice-head-bottom-right {
+                margin-top: 12px;
+                margin-bottom: 12px;
+            }
+
+            .invoice * {
+                text-align: left;
+            }
+
+            .invoice {
+                padding: 28px;
+            }
+        }
+
+        .overflow-view {
+            overflow-x: scroll;
+        }
+
+        .invoice-body {
+            min-width: 600px;
+        }
+
+        @media print {
+            .print-area {
+                visibility: visible;
+                width: 100%;
+                position: absolute;
+                left: 0;
+                top: 0;
+                overflow: hidden;
+            }
+
+            .overflow-view {
+                overflow-x: hidden;
+            }
+
+            .invoice-btns {
+                display: none;
+            }
+        }
+
+        h3 {
+            margin-left: 300px;
+        }
+    </style>
+    <div class="invoice-wrapper" id="print-area">
+        <div class="invoice">
+            <div class="invoice-container">
+                <div class="invoice-head">
+                    <div class="invoice-head-top">
+                        <div class="invoice-head-top-right text-end">
+                            <h3>Invoice</h3>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <div class="invoice-head-middle">
+                        <div class="invoice-head-middle-left">
+                            <p>
+                                <span class="text-bold" id="date"></span>
+
+                            </p>
+                        </div>
+                        <div class="invoice-head-middle-right">
+                            <p>
+                                <span class="text-bold" id="ino"></span>
+                            </p>
+                        </div>
+                        <div class="cusname">
+                            <p>
+                                <span class="text-bold" id="cus"></span>
+
+                            </p>
+                        </div>
+                    </div>
+                    <div class="hr"></div>
+                    <div class="invoice-head-bottom"></div>
+                </div>
+                <div class="overflow-view">
+                    <div class="invoice-body">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td class="text-bold">Items</td>
+                                    <td class="text-bold">Category</td>
+                                    <td class="text-bold">Rate</td>
+                                    <td class="text-bold">QTY</td>
+                                    <td class="text-bold">Amount</td>
+                                </tr>
+                            </thead>
+                            <tbody id="bd">
+
+                            </tbody>
+                        </table>
+                        <div class="invoice-body-bottom">
+                            <div class="invoice-body-info-item border-bottom">
+                                <div class="info-item-td text-end text-bold">Sub Total:</div>
+                                <div class="info-item-td text-end" id="total">
+
+                                </div>
+                            </div>
+                            <div class="invoice-body-info-item border-bottom">
+                                <div class="info-item-td text-end text-bold">Tax:</div>
+                                <div class="info-item-td text-end" id="tax">$215.00</div>
+                            </div>
+                            <div class="invoice-body-info-item">
+                                <div class="info-item-td text-end text-bold">Total:</div>
+                                <div class="info-item-td text-end" id="grand">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="invoice-foot text-center">
+                    <p>
+                        <span class="text-bold text-center">NOTE:&nbsp;</span>This is
+                        computer generated receipt and does not require physical
+                        signature.
+                    </p>
+
+                    <div class="invoice-btns">
+                        <button type="button" class="invoice-btn" onclick="printInvoice()">
+                            <span> <i class="fa-solid fa-print"></i>
+                            </span> <span>Print</span>
+                        </button>
+                        <button type="button" class="invoice-btn" id="mall">
+                            <span> <i class="fa-solid fa-envelope"></i>
+                            </span> <span>Email</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function printInvoice() {
+            window.print();
+        }
+    </script>
+    <script>
+        var url = "http://192.168.0.3:8080/Rest_ServerHome/rest/prasanna/invoice";
+        fetch(url, {
+            //body: formData,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            mode: 'no-cors'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                //return response.json(); // Parse the response as JSON
+                return response.json();
+            })
+            .then(data => {
+                // Handle the response data from the API
+                console.log('Response data:', data);
+                var sum = 0;
+                var itm = "";
+                function traverse_it(obj) {
+                    for (var prop in obj) {
+                        if (typeof obj[prop] == 'object') {
+                            // object
+                            traverse_it(obj[prop]);
+                        } else {
+                            sum += (parseInt(obj["value"]) * parseFloat(obj["price"]));
+                            // something else
+                            console.log('The value of ' + obj["itemName"] + ' is ' + obj["value"] + " price " + obj["price"] + '.');
+                            itm += `
+                                        <tr>
+                                            <td>${obj["itemName"]}</td>
+                                            <td>${obj["category"]}</td>
+                                            <td>${obj["price"]}</td>
+                                            <td>${obj["value"]}</td>
+                                            <td>${parseFloat(parseInt(obj["value"]) * parseFloat(obj["price"]))}</td>
+                                        </tr><br>`;
+                            break;
+                        }
+                    }
+                }
+
+                traverse_it(data["item"]);
+                document.getElementById("bd").innerHTML = itm;
+                document.getElementById("total").innerHTML = "$" + parseFloat(sum);
+                document.getElementById("tax").innerHTML = "$" + parseFloat((parseFloat(sum) * 5) / 100);
+                document.getElementById("grand").innerHTML = "$" + parseFloat(((parseFloat(sum) * 5) / 100) + sum);
+                document.getElementById("ino").innerHTML = "Invoice No:" + data["invoiceId"];
+                document.getElementById("cus").innerHTML = "Customer Name : " + data["customerName"];
+                console.log("sum=" + sum);
+                //console.log(data[2]);
+                // You can perform further processing here
+            })
+            .catch(error => {
+                // Handle any errors that occurred during the fetch
+                console.error('Fetch error:', error);
+            });
+    </script>
+    <script>
+        const date = new Date();
+
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+
+        // This arrangement can be altered based on how we want the date's format to appear.
+        let currentDate = `${day}-${month}-${year}`;
+        console.log(currentDate); // "17-6-2022"
+        document.getElementById("date").innerHTML = "Date : " + currentDate;
+    </script>
+    <script>
+        document.getElementById("mall").onclick = () => {
+            var url = "http://192.168.0.3:8080/Rest_ServerHome/rest/prasanna/mail?formid=mail";
+            fetch(url, {
+                method:'POST',
+                //body: formData,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                mode: 'no-cors'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    //return response.json(); // Parse the response as JSON
+                    return response.text();
+                })
+                .then(data => {
+                    // Handle the response data from the API
+                    console.log('Response data:', data);
+                    if (data == "mail.success") {
+                        $("body").load("mail_success.html");
+                    }
+                    else {
+                        $("body").load("mail_failed.html");
+                    }
+                    // You can perform further processing here
+                })
+                .catch(error => {
+                    // Handle any errors that occurred during the fetch
+                    console.error('Fetch error:', error);
+                });
+        }
+    </script>
+</body>
+
+</html>
